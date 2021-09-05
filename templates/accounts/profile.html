@@ -1,0 +1,11 @@
+{% extends 'base/base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}{{ user.username }}{% endblock %}
+{% block content %}
+    <form action="" enctype="multipart/form-data" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ user_form | crispy }}
+        {{ form | crispy }}
+        <input class="w-100 btn btn-primary mt-2" type="submit" value="Save Changes">
+    </form>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base/base2.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Signup{% endblock %}
+{% block content %}
+   <div class="row row-cols-1 row-cols-md-2 d-flex vh-100 align-items-center">
+   <div class="col">
+       <img src="https://www.befunky.com/images/prismic/e658cdf2-c8f6-43be-936d-2d1b09740c14_landing-collage-maker-img-1.png?auto=webp&format=jpg&width=863" alt="" class="img-fluid">
+   </div>
+   <div class="col">
+       <div class="p-3 shadow-sm my-3">
+    <h1 class="text-center mb-3">Sign up to see photos from your friends</h1>
+<form action="" enctype="multipart/form-data" method="post">
+    {%csrf_token%}
+    {{form | crispy}}
+    <input class="w-100 btn btn-primary mt-2" type="submit" value=Signup>
+</form>
+    <h6 class="mt-3 text-center">Already have an account? <a href="{% url 'login' %}" class="text-decoration-none">Login</a></h6>
+   </div>
+   </div>
+   </div>
+{% endblock %}

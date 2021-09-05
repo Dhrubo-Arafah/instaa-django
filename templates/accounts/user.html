@@ -1,0 +1,19 @@
+{% extends 'base/base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}{% endblock %}
+{% block content %}
+    <div class="row">
+    <div class="col-sm-4">
+        {% if user.user_profile.profile_pic %}
+        <img src="/media/{{ user.user_profile.profile_pic }}" width="150px" height="150px" alt="">
+    {% else %}
+        <img src="/media/default%20profile.png" width="150px" height="150px" alt="">
+    {% endif %}
+    </div>
+    <div class="col-sm-8">
+        <h2>{{ user.username }} &nbsp; <a href="{% url 'edit' %}" class="btn btn-light">Edit Profile</a></h2>
+        <br>
+        <h4>{{ user.post.count }} posts &nbsp; &nbsp; {{ user.following.count }} followers &nbsp; &nbsp; {{ user.follower.count }} following</h4>
+    </div>
+    </div>
+{% endblock %}
