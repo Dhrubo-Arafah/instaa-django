@@ -1,0 +1,42 @@
+{% extends 'base/base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}{{ user.username }}{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-sm-4">
+            {% if user.user_profile.profile_pic %}
+                <img src="/media/{{ user.user_profile.profile_pic }}" width="150px" height="150px" alt="">
+            {% else %}
+                <img src="/media/default%20profile.png" width="150px" height="150px" alt="">
+            {% endif %}
+        </div>
+        <div class="col-sm-8">
+            <h2>{{ user.username }}</h2> &nbsp;
+            {% if not already_followed %}
+                <a href="{% url 'follow' username=user.username %}" class="btn btn-light">Follow</a>
+            {% else %}
+                <a href="{% url 'unfollow' username=user.username %}" class="btn btn-light">Unfollow</a>
+            {% endif %}
+            <br>
+            <h4>{{ user.post.count }} posts &nbsp; &nbsp; {{ user.following.count }} followers &nbsp;
+                &nbsp; {{ user.follower.count }} following</h4>
+            <br>
+            <h2>{{ user.first_name }} {{ user.last_name }}</h2>
+            <p>{{ user.user_profile.description }}</p>
+        </div>
+    </div>
+    <hr>
+
+    </div>
+    </div>
+    <div class="container mt-3">
+        <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6">
+            {% for post in user.post.all %}
+                <div class="col">
+                    <img src="/media/{{ post.image }}" alt="{{ post.caption }}" height="250px" width="250px"
+                         class="img-fluid overflow-hidden" target="_blank">
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

@@ -2,12 +2,14 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
+from App_Post.forms import PostForm
 from accounts.forms import CreateNewUser, EditProfile, EditUser
-from accounts.models import UserProfile
+from accounts.models import UserProfile, Follow
 
 
 def sign_up(request):
@@ -61,7 +63,7 @@ def edit_profile(request):
             user_form.save()
             return HttpResponseRedirect(reverse('profile'))
     context = {
-        'user_form':user_form,
+        'user_form': user_form,
         'form': form
     }
     return render(request, 'accounts/profile.html', context)
@@ -77,3 +79,52 @@ def logout_user(request):
 def profile(request):
     context = {}
     return render(request, 'accounts/user.html', context)
+
+
+@login_required
+def profile(request):
+    form = PostForm()
+    if request.method == 'POST':
+        form = PostForm(request.POST, request.FILES)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+            return HttpResponseRedirect(reverse('home'))
+    context = {
+        'form': form
+    }
+    return render(request, 'accounts/user.html', context)
+
+
+@login_required
+def user(request, username):
+    user = User.objects.get(username=username)
+    already_followed = Follow.objects.filter(follower=request.user, following=user)
+    if user == request.user:
+        return HttpResponseRedirect(reverse('profile'))
+    context = {
+        'user': user,
+        'already_followed': already_followed
+    }
+    return render(request, 'accounts/other.html', context)
+
+
+@login_required
+def follow(request, username):
+    following_user = User.objects.get(username=username)
+    follower_user = request.user
+    already_followed = Follow.objects.filter(follower=follower_user, following=following_user)
+    if not already_followed:
+        followed_user = Follow(follower=follower_user, following=following_user)
+        followed_user.save()
+    return HttpResponseRedirect(reverse('user', kwargs={'username': username}))
+
+
+@login_required
+def unfollow(request, username):
+    following_user = User.objects.get(username=username)
+    follower_user = request.user
+    already_followed = Follow.objects.filter(follower=follower_user, following=following_user)
+    already_followed.delete()
+    return HttpResponseRedirect(reverse('user', kwargs={'username': username}))

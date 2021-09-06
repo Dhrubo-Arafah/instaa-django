@@ -1,5 +1,46 @@
 {% extends 'base/base.html' %}
 {% block title %}Home{% endblock %}
 {% block content %}
-    home page
+    <div class="container mt-3">
+        {% if search %}
+            <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-3">
+            <p>showing <strong>{{ result.count }} results</strong> for <strong>"{{ search }}"</strong></p>
+            {% for user in result %}
+                <div class="col">
+                    <div style="cursor:pointer;" class="border p-2">
+                        <a href="{% url 'user' username=user.username %}">
+                            <img src="/media/{{ user.user_profile.profile_pic }}" alt="{{ post.caption }}"
+                                 height="250px"
+                                 width="250px" class="img-fluid overflow-hidden rounded-circle">
+                            <h6 class="text-center">{{ user.username }}</h6>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            {% for post in posts %}
+                <div class="shadow">
+                    <div class="p-2">
+                        {% if post.author.user_profile.profile_pic %}
+                            <img src="/media/{{ user.user_profile.profile_pic }}" height="40px" width="40px"
+                                 alt="" class="rounded-circle">
+                        {% else %}
+                            <img src="/media/default profile.png" height="40px" width="40px" alt=""
+                                 class="rounded-circle">
+                        {% endif %}
+                        <span>{{ post.author.username }}</span>
+                        <img src="/media/{{ post.image }}" alt="" class="w-100"> <br>
+                        <div style="padding:20px">
+                            {% if post.pk in liked_list %}
+                                <a href="{% url 'unliked' pk=post.pk %}"><i class="far fa-heart text-danger fs-2"></i></a>
+                            {% else %}
+                                <a href="{% url 'liked' pk=post.pk %}"><i class="fa fa-heart text-danger fs-2"></i></a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+        </div>
+    </div>
 {% endblock %}

@@ -8,6 +8,7 @@ from django.db.models.signals import post_save
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='user_profile')
     profile_pic = models.ImageField(upload_to='image/')
+    description = models.TextField(blank=True)
     dob = models.DateField(blank=True, null=True)
     website = models.URLField(blank=True)
     facebook = models.URLField(blank=True)

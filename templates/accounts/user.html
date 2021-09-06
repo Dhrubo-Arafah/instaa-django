@@ -3,17 +3,61 @@
 {% block title %}{% endblock %}
 {% block content %}
     <div class="row">
-    <div class="col-sm-4">
-        {% if user.user_profile.profile_pic %}
-        <img src="/media/{{ user.user_profile.profile_pic }}" width="150px" height="150px" alt="">
-    {% else %}
-        <img src="/media/default%20profile.png" width="150px" height="150px" alt="">
-    {% endif %}
+        <div class="col-sm-4">
+            {% if user.user_profile.profile_pic %}
+                <img src="/media/{{ user.user_profile.profile_pic }}" width="150px" height="150px" alt="">
+            {% else %}
+                <img src="/media/default%20profile.png" width="150px" height="150px" alt="">
+            {% endif %}
+        </div>
+        <div class="col-sm-8">
+            <h2>{{ user.username }} &nbsp; <a href="{% url 'edit' %}" class="btn btn-light">Edit Profile</a></h2>
+            <br>
+            <h4>{{ user.post.count }} posts &nbsp; &nbsp; {{ user.following.count }} followers &nbsp;
+                &nbsp; {{ user.follower.count }} following</h4>
+            <br>
+            <h2>{{ user.first_name }} {{ user.last_name }}</h2>
+            <p>{{ user.user_profile.description|linebreaks}}</p>
+        </div>
     </div>
-    <div class="col-sm-8">
-        <h2>{{ user.username }} &nbsp; <a href="{% url 'edit' %}" class="btn btn-light">Edit Profile</a></h2>
-        <br>
-        <h4>{{ user.post.count }} posts &nbsp; &nbsp; {{ user.following.count }} followers &nbsp; &nbsp; {{ user.follower.count }} following</h4>
+    <hr>
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-lg text-white px-5 bg-primary" data-bs-toggle="modal"
+            data-bs-target="#staticBackdrop">
+        Add Image
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade w-100" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+         tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content shadow-lg">
+                <div class="modal-header">
+                    <h5 class="modal-title fs-2 text-dark" id="staticBackdropLabel">Add new post</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="" method="post" enctype="multipart/form-data">
+                    <div class="modal-body">
+                        {% csrf_token %}
+                        {{ form | crispy }}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="reset" class="btn btn-light btn-lg" data-bs-dismiss="modal">Reset</button>
+                        <button type="submit" class="btn btn-primary text-capitalize border-0 btn-lg">Upload</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
+    </div>
+    </div>
+    <div class="container mt-3">
+        <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6">
+            {% for post in user.post.all %}
+                <div class="col">
+                    <img src="/media/{{ post.image }}" alt="{{ post.caption }}" height="250px" width="250px" class="img-fluid overflow-hidden" target="_blank">
+                </div>
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}
